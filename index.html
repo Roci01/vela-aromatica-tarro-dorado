@@ -110,6 +110,13 @@
       </div>
       <input type="hidden" id="color" />
 
+      <label for="empaqueRegalo">¿Deseas empaque especial de regalo?</label>
+      <select id="empaqueRegalo" onchange="actualizarPrecio()">
+        <option value="Ninguno" selected>No, gracias (bolsita estándar)</option>
+        <option value="Caja kraft">Caja kraft (+100 CUP)</option>
+        <option value="Caja plateada">Caja plateada (+320 CUP)</option>
+      </select>
+
       <label>Cantidad (1–10):</label>
       <input type="number" id="cantidad" min="1" max="10" />
 
@@ -140,6 +147,14 @@
     });
 
     function actualizarPrecio() {
+      const empaque = document.getElementById("empaqueRegalo").value;
+      let precioEmpaque = 0;
+      if (empaque === "Caja kraft") precioEmpaque = 100;
+      else if (empaque === "Caja plateada") precioEmpaque = 320;
+      
+      let basePrecio = aroma === "Sin aroma" ? precioSinAroma : precioConAroma;
+      let totalPrecio = basePrecio + precioEmpaque;
+      precioDiv.textContent = "Precio: " + totalPrecio + " CUP";
       const aroma = aromaSelect.value;
       precioDiv.textContent = aroma === "Sin aroma"
         ? "Precio: 1,100 CUP"
@@ -167,17 +182,21 @@
         return;
       }
 
+      var empaque = document.getElementById('empaqueRegalo').value;
+      var precioEmpaque = empaque === "Caja kraft" ? 93 : empaque === "Caja plateada" ? 321 : 0;
+      var precioFinal = (aroma === "Sin aroma" ? precioSinAroma : precioConAroma) + precioEmpaque;
+      
       var mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
         + "🕯️ Producto: " + producto + "\n"
         + "🌸 Aroma: " + aroma + "\n"
         + "🎨 Color: " + color + "\n"
+        + "🎁 Empaque: " + empaque + "\n"
         + "🔢 Cantidad: " + cantidad + "\n"
         + "👤 Nombre: " + nombre + "\n"
-        + "💰 Precio por unidad: " + precioFinal + " CUP";
-
-      var url = "https://wa.me/5353810462?text=" + encodeURIComponent(mensaje);
-      window.open(url, "_blank");
-    }
+        + "💰 Precio por unidad: " + precioFinal + " CUC";
+            var url = "https://wa.me/5353810462?text=" + encodeURIComponent(mensaje);
+            window.open(url, "_blank");
+          }
 
     // Mostrar precio correcto al cargar la página
     window.onload = actualizarPrecio;
