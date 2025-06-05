@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vela de tarro negro</title>
+  <title>Vela de tarro dorado</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -87,14 +87,13 @@
 </head>
 <body>
   <div class="container">
-    <h2>Personaliza tu vela</h2>
+    <h2>Personaliza tu vela de tarro negro</h2>
     <form id="velaForm">
       <label>Producto:</label>
       <input type="text" id="producto" value="Vela aromática de tarro dorado" readonly />
 
       <label>Aroma:</label>
-      <select id="aroma" onchange="actualizarPrecio()">
-        <option value="Sin aroma" selected>Sin aroma</option>
+      <select id="aroma">
         <option value="Vainilla">Vainilla</option>
         <option value="Menta">Menta</option>
         <option value="Eucalipto">Eucalipto</option>
@@ -112,7 +111,7 @@
 
       <label>¿Deseas empaque especial de regalo?</label>
       <select id="empaqueRegalo" onchange="actualizarPrecio()">
-        <option value="estandar" selected>No, gracias (bolsita estándar)</option>
+        <option value="Ninguno" selected>No, gracias (bolsita estándar)</option>
         <option value="Caja kraft">Caja kraft (+100 CUP)</option>
         <option value="Caja plateada">Caja plateada (+320 CUP)</option>
       </select>
@@ -123,7 +122,7 @@
       <label>Tu nombre:</label>
       <input type="text" id="nombre" />
 
-      <div id="precio">Precio: 1,100 CUP</div>
+      <div id="precio">Precio: 1,300 CUP</div>
 
       <button type="button" class="submit-button" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>
     </form>
@@ -132,12 +131,10 @@
   <script>
     var colorCircles = document.querySelectorAll('.color-circle');
     var colorInput = document.getElementById('color');
-    var aromaSelect = document.getElementById('aroma');
-    var precioDiv = document.getElementById('precio');
     var empaqueSelect = document.getElementById('empaqueRegalo');
+    var precioDiv = document.getElementById('precio');
 
-    const precioSinAroma = 1100;
-    const precioConAroma = 1300;
+    const precioBase = 1300;
     const precioKraft = 100;
     const precioPlateada = 320;
 
@@ -150,19 +147,18 @@
     });
 
     function actualizarPrecio() {
-      const aroma = aromaSelect.value;
       const empaque = empaqueSelect.value;
-      let base = aroma === "Sin aroma" ? precioSinAroma : precioConAroma;
+      let total = precioBase;
 
-      if (empaque === "Caja kraft") base += precioKraft;
-      else if (empaque === "Caja plateada") base += precioPlateada;
+      if (empaque === "Caja kraft") total += precioKraft;
+      else if (empaque === "Caja plateada") total += precioPlateada;
 
-      precioDiv.textContent = "Precio: " + base + " CUP";
+      precioDiv.textContent = "Precio: " + total + " CUP";
     }
 
     function enviarWhatsapp() {
       var producto = document.getElementById('producto').value.trim();
-      var aroma = aromaSelect.value.trim();
+      var aroma = document.getElementById('aroma').value.trim();
       var color = document.getElementById('color').value.trim();
       var cantidad = document.getElementById('cantidad').value.trim();
       var nombre = document.getElementById('nombre').value.trim();
@@ -181,9 +177,9 @@
         return;
       }
 
-      var precioBase = aroma === "Sin aroma" ? precioSinAroma : precioConAroma;
-      if (empaque === "Caja kraft") precioBase += precioKraft;
-      else if (empaque === "Caja plateada") precioBase += precioPlateada;
+      let total = precioBase;
+      if (empaque === "Caja kraft") total += precioKraft;
+      else if (empaque === "Caja plateada") total += precioPlateada;
 
       var mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
         + "🕯️ Producto: " + producto + "\n"
@@ -192,9 +188,9 @@
         + "🎁 Empaque: " + empaque + "\n"
         + "🔢 Cantidad: " + cantidad + "\n"
         + "👤 Nombre: " + nombre + "\n"
-        + "💰 Precio por unidad: " + precioBase + " CUP";
+        + "💰 Precio por unidad: " + total + " CUP";
 
-      var url = "https://wa.me/5353810462?text=" + encodeURIComponent(mensaje);
+      var url = "https://wa.me/53810462?text=" + encodeURIComponent(mensaje);
       window.open(url, "_blank");
     }
 
